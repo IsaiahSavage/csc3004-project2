@@ -33,6 +33,19 @@ using namespace std;
 
 using namespace cgicc;
 
+/**
+* Print the results returned by the Bible lookup
+*
+* @param requestedVerse: The requested verse
+* @param result: The fully-formatted string result
+* @param search_type: The form field that contains the type of search performed
+*/
+void printResult(Verse requestedVerse, const string result, const form_iterator search_type) {
+	cout << "Search Type: <b>" << **search_type << "</b>" << endl; // search type
+	cout << "<p><b>" << requestedVerse.getRef().toString() << "</b> " << endl; // requested verse reference
+	cout << result << "</p>" << endl; // formatted results
+}
+
 int main() {
   /* A CGI program must send a response header with content type
    * back to the web client before any other output.
@@ -117,20 +130,29 @@ int main() {
   Verse requestedVerse;
   LookupResult result;
   Ref ref(bookNum, chapterNum, verseNum);
+  string fullResult = ""; // formatted verse(s) to return
 
-  if (validInput) {
-	  requestedVerse = webBible.lookup(ref, result);
-	  if (result == SUCCESS) {
-		// TODO: concatenate multiple verses together and 
-		// return the result
-		/*for (int i = 0; i < numVerses - 1; i++) {
-			  verse = webBible.nextVerse(result);
-		  }*/
+  requestedVerse = webBible.lookup(ref, result);
+  if (result == SUCCESS) {
+	  fullResult += "<sup>" + to_string(requestedVerse.getRef().getVerse()) + "</sup>"; // add superscript verse number
+	  fullResult += requestedVerse.getVerse(); // add verse
+
+	  // retrieve rest of verses if requested
+	  for (int i = 0; i < numVerses - 1 && validInput; i++) {
+		  Verse nextVerse = webBible.nextVerse(result);
+		  if (result == SUCCESS) {
+			  fullResult += " <sup>" + to_string(nextVerse.getRef().getVerse()) + "</sup>";
+			  fullResult += nextVerse.getVerse();
+		  }
+		  else {
+			  validInput = false;
+			  cout << "<p>" << webBible.error(result) << "</p>" << endl;
+		  }
 	  }
-	  else {
-		  validInput = false;
-		  cout << "<p>" << webBible.error(result) << "</p>" << endl;
-	  }
+  }
+  else {
+	  validInput = false;
+	  cout << "<p>" << webBible.error(result) << "</p>" << endl;
   }
 
   /* SEND BACK THE RESULTS
@@ -140,8 +162,7 @@ int main() {
    * so we must include HTML formatting commands to make things look presentable!
    */
   if (validInput) {
-	cout << "Search Type: <b>" << **st << "</b>" << endl;
-	cout << "<p>" << requestedVerse.getRef().toString() << " " << requestedVerse.getVerse() << "</p>" << endl;
+	  printResult(requestedVerse, fullResult, st);
   }
   else {
 	  cout << "<p>Invalid Input: <em>" << webBible.error(result) << "</em></p>" << endl;

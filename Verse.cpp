@@ -20,7 +20,7 @@ Verse::Verse(const string s) {
     string refLengthStr(to_string(verseRef.getBook()) + to_string(verseRef.getChap()) + to_string(verseRef.getVerse()));
     size_t verseRefOffset = refLengthStr.length() + 3;
     verseText = s.substr(verseRefOffset);
-}  	
+}
 
 // REQUIRED: Accessors
 string Verse::getVerse() {
