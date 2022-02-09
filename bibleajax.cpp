@@ -1,6 +1,7 @@
 /* Demo server program for Bible lookup using AJAX/CGI interface
  * By James Skon, Febrary 10, 2011
  * updated by Bob Kasper, January 2020
+ * updated by Isaiah Savage February 2022
  * Mount Vernon Nazarene University
  * 
  * This sample program works using the cgicc AJAX library to
@@ -36,14 +37,16 @@ using namespace cgicc;
 /**
 * Print the results returned by the Bible lookup
 *
-* @param requestedVerse: The requested verse
+* @param requestedVerseRef: The requested verse
 * @param result: The fully-formatted string result
+* @param numVerseS: The requested number of verses
 * @param search_type: The form field that contains the type of search performed
 */
-void printResult(Verse requestedVerse, const string result, const form_iterator search_type) {
+void printResult(Ref requestedVerseRef, const int numVerses, const string result, const form_iterator search_type) {
 	cout << "Search Type: <b>" << **search_type << "</b>" << endl; // search type
-	cout << "<p><b>" << requestedVerse.getRef().toString() << "</b> " << endl; // requested verse reference
-	cout << result << "</p>" << endl; // formatted results
+	cout << "<h2>" << requestedVerseRef.toString() // requested verse reference
+		<< " - <em>" << numVerses << " Verse(s)</em></h2>" << endl; // requested number of verses
+	cout << "<p>" << result << "</p>" << endl; // formatted results
 }
 
 int main() {
@@ -80,7 +83,6 @@ int main() {
 		 validInput = true;
   }
   
-  /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
   if (validInput) {
 	  validInput = false;
 	  if (verse != cgi.getElements().end()) {
@@ -111,20 +113,16 @@ int main() {
   }
 
   if (validInput) {
-	  validInput = false;
 	  if (nv != cgi.getElements().end()) {
 		  numVerses = nv->getIntegerValue();
 		  if (numVerses > 31102 || numVerses <= 0) {
-			  cout << "<p>The number of verses must be between 1 and 31,102, the total number of verses in the Bible!</p>" << endl;
-		  }
-		  else {
-			  validInput = true;
+			  numVerses = 1;
 		  }
 	  }
+	  else {
+		  numVerses = 1;
+	  }
   }
-  /* TO DO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
-   *        TO LOOK UP THE REQUESTED VERSES
-   */
 
   Bible webBible("/home/class/csc3004/Bibles/web-complete");
   Verse requestedVerse;
@@ -134,25 +132,34 @@ int main() {
 
   requestedVerse = webBible.lookup(ref, result);
   if (result == SUCCESS) {
-	  fullResult += "<sup>" + to_string(requestedVerse.getRef().getVerse()) + "</sup>"; // add superscript verse number
+	  // Add book & chapter headings
+	  fullResult += "<b>" + ref.getBookName() + " " + to_string(ref.getChap()) + "</b><br>";
+	  fullResult += "<sup>" + to_string(ref.getVerse()) + "</sup>"; // add superscript verse number
 	  fullResult += requestedVerse.getVerse(); // add verse
 
 	  // retrieve rest of verses if requested
+	  int expectedBook = ref.getBook(); // expected book; initially set to the book the results start in
+	  int expectedChap = ref.getChap(); // expected chapter; initially set to the chapter the results start in
 	  for (int i = 0; i < numVerses - 1 && validInput; i++) {
 		  Verse nextVerse = webBible.nextVerse(result);
 		  if (result == SUCCESS) {
+			  // Add book & chapter headings
+			  if (nextVerse.getRef().getBook() != expectedBook || nextVerse.getRef().getChap() != expectedChap) {
+				  fullResult += "<br><br><b>" + nextVerse.getRef().getBookName() + " " + to_string(nextVerse.getRef().getChap()) + "</b><br>";
+				  // change expected book/chapter as needed
+				  expectedBook = nextVerse.getRef().getBook();
+				  expectedChap = nextVerse.getRef().getChap();
+			  }
 			  fullResult += " <sup>" + to_string(nextVerse.getRef().getVerse()) + "</sup>";
 			  fullResult += nextVerse.getVerse();
 		  }
 		  else {
 			  validInput = false;
-			  cout << "<p>" << webBible.error(result) << "</p>" << endl;
 		  }
 	  }
   }
   else {
 	  validInput = false;
-	  cout << "<p>" << webBible.error(result) << "</p>" << endl;
   }
 
   /* SEND BACK THE RESULTS
@@ -162,7 +169,7 @@ int main() {
    * so we must include HTML formatting commands to make things look presentable!
    */
   if (validInput) {
-	  printResult(requestedVerse, fullResult, st);
+	  printResult(ref, numVerses, fullResult, st);
   }
   else {
 	  cout << "<p>Invalid Input: <em>" << webBible.error(result) << "</em></p>" << endl;
