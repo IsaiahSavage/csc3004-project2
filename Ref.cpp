@@ -57,19 +57,44 @@ int Ref::getVerse() const {return verse;}; // Access verse number
 
 // TO DO: implement comparison functions
 // REQUIRED: == comparison
-bool Ref::operator==(const Ref r) { 
-    if (book == r.getBook() && chap == r.getChap() && verse == r.getVerse()) return true;
-    return false;
+bool Ref::operator==(const Ref r) const { 
+    return (book == r.getBook() && chap == r.getChap() && verse == r.getVerse());
 }
 
 // OPTIONAL: define < and > comparisons
-bool Ref::operator<(const Ref r) {
-    if (!(book >= r.getBook()) && !(chap >= r.getChap()) && !(verse >= r.getVerse())) return true;
-    return false;
+bool Ref::operator<(const Ref r) const {
+    bool isLessThan = false;
+    if (book < r.getBook()) {
+        isLessThan = true;
+    }
+    else if (book == r.getBook()) {
+        if (chap < r.getChap()) {
+            isLessThan = true;
+        }
+        else if (chap == r.getChap()) {
+            if (verse < r.getVerse()) {
+                isLessThan = true;
+            }
+        }
+    }
+    return isLessThan;
 }
-bool Ref::operator>(const Ref r) {
-    if (!(book <= r.getBook()) && !(chap <= r.getChap()) && !(verse <= r.getVerse())) return true;
-    return false;
+bool Ref::operator>(const Ref r) const {
+    bool isGreaterThan = false;
+    if (book > r.getBook()) {
+        isGreaterThan = true;
+    }
+    else if (book == r.getBook()) {
+        if (chap > r.getChap()) {
+            isGreaterThan = true;
+        }
+        else if (chap == r.getChap()) {
+            if (verse > r.getVerse()) {
+                isGreaterThan = true;
+            }
+        }
+    }
+    return isGreaterThan;
 }
 
 // TO DO: modify display function to show book name instead of book number

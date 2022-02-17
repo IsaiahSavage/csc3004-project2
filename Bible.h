@@ -14,6 +14,7 @@
 #include "Verse.h"
 #include <iostream>
 #include <fstream>
+#include <map>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,8 +28,13 @@ class Bible {	// A class to represent a version of the bible
    string infile;		// file path name
    ifstream instream;	// input stream, used when file is open
    bool isOpen;			// true if file is open
+   map<Ref, int> refs; // inverted index of references
    // OPTIONAL: you may add variables to keep track of
    // the current line and/or reference when scanning the file
+   
+   // Finds issues with nonexistent references
+   // Used as a helper function for lookups
+   LookupResult findErrorInRef(const Ref ref);
 
  public:
    Bible();	// Default constructor
@@ -37,8 +43,18 @@ class Bible {	// A class to represent a version of the bible
    // Opens infile. True if file is successfully opened, false if not.
    bool openFile();
    
+   // Constructs inverted index by Ref
+   bool buildTextIndexByRef();
+
+   // Returns index of references
+   map<Ref, int> getRefIndex();
+
+   // Searches index of Refs for a particular Ref
+   int indexSearchByRef(const Ref ref) const;
+
    // REQUIRED: Find and return a verse in this Bible, given a reference
    Verse lookup(const Ref ref, LookupResult& status);
+
    // REQUIRED:
    // Return the next verse from the Bible file stream if the file is open.
    // If the file is not open, open the file and return the first verse.

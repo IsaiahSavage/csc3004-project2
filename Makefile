@@ -18,7 +18,9 @@ USER= isasavage
 CC= g++
 CFLAGS= -g -std=c++11
 
-all:	bibleajax.cgi PutCGI PutHTML
+all:	testreader
+#temporarily disabled for Project 3 Testing
+#bibleajax.cgi PutCGI PutHTML
 
 # TO DO: For bibleajax.cgi, add dependencies to include
 # compiled classes from Project 1 to be linked into the executable program
@@ -53,6 +55,14 @@ PutHTML:
 
 		echo "Current contents of your HTML directory: "
 		ls -l /var/www/html/class/csc3004/$(USER)
+
+# PROJECT 3p1 TEST
+testreader.o : Ref.h Verse.h Bible.h testreader.cpp
+	$(CC) $(CFLAGS) -c testreader.cpp
+
+# PROJECT 3p1 TEST
+testreader: Ref.o Verse.o Bible.o testreader.o
+	$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
 
 clean:		
 		rm *.o core bibleajax.cgi
