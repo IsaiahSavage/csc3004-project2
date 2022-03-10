@@ -18,30 +18,6 @@ int main(int argc, char** argv) {
 	lastElementIt--;
 	cout << "Offset of last reference added to index: " << (*lastElementIt).second << endl;
 
-	Ref genesisRef(1,1,1);
-	int genesisOffset = -1;
-	auto it = refs.find(genesisRef);
-	if (it != refs.end()) {
-		genesisOffset = refs[genesisRef];
-	}
-	cout << "Offset of Genesis 1:1: " << genesisOffset << endl;
-
-	Ref genesisSecondRef(1,1,2);
-	int genesisSecondOffset = -1;
-	it = refs.find(genesisSecondRef);
-	if (it != refs.end()) {
-		genesisSecondOffset = refs[genesisSecondRef];
-	}
-	cout << "Offset of Genesis 1:2: " << genesisSecondOffset << endl;
-
-	Ref genesisThirdRef(1,1,3);
-	int genesisThirdOffset = -1;
-	it = refs.find(genesisThirdRef);
-	if (it != refs.end()) {
-		genesisThirdOffset = refs[genesisThirdRef];
-	}
-	cout << "Offset of Genesis 1:3: " << genesisThirdOffset << endl;
-
 	switch (argc) {
 	case 1:
 		cerr << "Usage: " << argv[0] << " <book_number (1-66)> <chapter_number> <verse_number> <num_of_verses (optional)>" << endl;
