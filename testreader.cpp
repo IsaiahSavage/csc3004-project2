@@ -1,7 +1,7 @@
-// testReader.cpp
+// testreader.cpp
 // Command line driver program for testing Ref index
 // Author: Isaiah Savage
-// Last Updated: 2/17/22
+// Last Updated: 3/10/22
 
 #include "Bible.h"
 #include "Ref.h"

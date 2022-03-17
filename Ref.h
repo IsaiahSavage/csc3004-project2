@@ -37,7 +37,8 @@ public:
    
    // REQUIRED: Display the reference on cout, example output: John 3:16
    void display();
-   string toString();
+   string toString(); // returns reference with book name (e.g., Genesis 1:1)
+   string toStringNumber(); // returns integer version of reference (e.g., 1:1:1)
    // Your version of display should show the book name
    // corresponding to the stored book number.
 

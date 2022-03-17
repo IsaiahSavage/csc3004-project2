@@ -3,37 +3,49 @@
 # updated January 2020 to use
 # c++11 compiler option, current paths on cs.mvnu.edu
 
-# This is a Makefile for the Bible web app demo program.
-# Copy this directory to a location within your home directory. 
-# Change the USER name value below to your own user name.
-# Then use "make" to build the server program,
-# and deploy it to the live web server directory.
-# To test the program, go to http://cs.mvnu.edu/class/csc3004/USER/
-# and open the bibleajax.html link.
-
-# TO DO: Must replace "username" by your username
 USER= isasavage
 
 # Use GNU C++ compiler with C++11 standard
 CC= g++
 CFLAGS= -g -std=c++11
 
-all:	testreader
-#temporarily disabled for Project 3 Testing
-#bibleajax.cgi PutCGI PutHTML
+all: PutCGI PutHTML biblelookupclient.cgi biblelookupserver
+# Project 3p2 Build
+# PutCGI PutHTML biblelookupclient.cgi biblelookupserver
+# Project 3p1 Build
+# testreader
+# Project 1 & 2 Build
+# bibleajax.cgi PutCGI PutHTML
 
-# TO DO: For bibleajax.cgi, add dependencies to include
-# compiled classes from Project 1 to be linked into the executable program
 bibleajax.cgi:	bibleajax.o Ref.o Verse.o Bible.o
 		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Ref.o Verse.o Bible.o -lcgicc
 		# -l option is necessary to link with cgicc library
 
-# main program to handle AJAX/CGI requests for Bible references
+biblelookupclient.cgi : biblelookupclient.o Bible.o Verse.o Ref.o fifo.o logfile.h
+		$(CC) $(CFLAGS) -o biblelookupclient.cgi biblelookupclient.o Bible.o Verse.o Ref.o fifo.o -lcgicc
+
+testreader: Ref.o Verse.o Bible.o testreader.o
+	$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
+
+biblelookupserver : biblelookupserver.o Bible.o Verse.o Ref.o fifo.o
+		$(CC) $(CFLAGS) -o biblelookupserver biblelookupserver.o Bible.o Verse.o Ref.o fifo.o
+
+biblelookupclient.o : biblelookupclient.cpp Bible.h Verse.h Ref.h fifo.h logfile.h
+		$(CC) $(CFLAGS) -c biblelookupclient.cpp
+
+biblelookupserver.o : biblelookupserver.cpp Bible.h Verse.h Ref.h fifo.h
+		$(CC) $(CFLAGS) -c biblelookupserver.cpp
+
 bibleajax.o:	bibleajax.cpp
 		$(CC) $(CFLAGS) -c bibleajax.cpp
 
-# TO DO: copy targets to build classes from Project 1:
-# Bible.o, Ref.o, Verse.o
+testreader.o : Ref.h Verse.h Bible.h testreader.cpp
+	$(CC) $(CFLAGS) -c testreader.cpp
+
+# piping mechanism
+fifo.o : fifo.h fifo.cpp
+	$(CC) $(CFLAGS) -c fifo.cpp
+
 Ref.o : Ref.h Ref.cpp
 	$(CC) $(CFLAGS) -c Ref.cpp
 
@@ -43,26 +55,18 @@ Verse.o : Ref.h Verse.h Verse.cpp
 Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 	$(CC) $(CFLAGS) -c Bible.cpp
 			
-PutCGI:	bibleajax.cgi
-		chmod 755 bibleajax.cgi
-		cp bibleajax.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
+PutCGI:	biblelookupclient.cgi
+		chmod 755 biblelookupclient.cgi
+		cp biblelookupclient.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
 
 		echo "Current contents of your cgi-bin directory: "
 		ls -l /var/www/html/class/csc3004/$(USER)/cgi-bin/
 
 PutHTML:
-		cp bibleajax.html /var/www/html/class/csc3004/$(USER)
+		cp bibleindex.html /var/www/html/class/csc3004/$(USER)
 
 		echo "Current contents of your HTML directory: "
 		ls -l /var/www/html/class/csc3004/$(USER)
 
-# PROJECT 3p1 TEST
-testreader.o : Ref.h Verse.h Bible.h testreader.cpp
-	$(CC) $(CFLAGS) -c testreader.cpp
-
-# PROJECT 3p1 TEST
-testreader: Ref.o Verse.o Bible.o testreader.o
-	$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
-
 clean:		
-		rm *.o core bibleajax.cgi
+		rm *.o core bibleajax.cgi testreader biblelookupclient.cgi biblelookupserver

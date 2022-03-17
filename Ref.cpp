@@ -97,13 +97,18 @@ bool Ref::operator>(const Ref r) const {
     return isGreaterThan;
 }
 
-// TO DO: modify display function to show book name instead of book number
 void Ref::display() { 	// Display Reference
      cout << getBookName() << " " << chap << ":" << verse;
 }
 
+// returns reference with book name (e.g., Genesis 1:1)
 string Ref::toString() {
     return getBookName() + " " + to_string(chap) + ":" + to_string(verse);
+}
+
+// returns integer version of reference (e.g., 1:1:1)
+string Ref::toStringNumber() {
+    return to_string(book) + ":" + to_string(chap) + ":" + to_string(verse);
 }
 
 string Ref::getBookName() {

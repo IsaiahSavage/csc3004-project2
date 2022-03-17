@@ -1,0 +1,22 @@
+Request Pipe Format: REQUEST BOOK:CHAPTER:VERSE
+	FIELD TYPES
+		- REQUEST is a function request (lookup, next, or prev)
+		- BOOK, CHAPTER, and VERSE are integers
+	REASONING
+		- Requesting a method instead of the number of verses allows each
+		verse to be passed individually. This allows the logic for displaying each verse with its 
+		respective reference, as well as the logic for determining changes in book and chapter, to
+		happen much more naturally.
+		- A Ref object can be constructed from a string formatted as BOOK:CHAPTER:VERSE.
+Reply Pipe Format: STATUS BOOK:CHAPTER:VERSE TEXT
+	FIELD TYPES
+		- STATUS is an integer representation of LookupResult enum
+		- BOOK, CHAPTER, and VERSE are integers
+		- TEXT is a string representing the text of the requested verse (returned only when request 
+		was for lookup() method)
+	REASONING
+		- Passing status first allows for easy checking of success/failure. If a failure occurs, the
+		rest of the input does not need to be read, thereby allowing for potentially faster 
+		feedback.
+		- A Ref object can be constructed from a string formatted as BOOK:CHAPTER:VERSE.
+		- A Verse object can be constructed form a string formatted as BOOK:CHAPTER:VERSE TEXT.

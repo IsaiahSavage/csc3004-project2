@@ -1,6 +1,6 @@
 // Bible class function definitions
 // Computer Science, MVNU
-// Updated: 1/20/22
+// Updated: 3/12/22
 
 #include "Ref.h"
 #include "Verse.h"
@@ -186,8 +186,6 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
     return aVerse;
 }
 
-// TODO: convert to using indexSearchByRef() function
-// NOTE: I believe that this is already done; it should require only minor changes if not
 // Return the next verse from the Bible file stream if the file is open.
 // If the file is not open, open the file and return the first verse.
 Verse Bible::nextVerse(LookupResult& status) {
@@ -233,7 +231,6 @@ void Bible::display() {
 	cout << "Bible file: " << infile << endl;
 }
 	
-// TODO: write using indexSearchByRef() function
 // Return the reference after the given ref
 Ref Bible::next(const Ref ref, LookupResult& status) { 
 	auto it = refs.find(ref);
@@ -247,11 +244,9 @@ Ref Bible::next(const Ref ref, LookupResult& status) {
 			status = findErrorInRef(ref);
 		}
 	}
-	// TODO: what to return here?
 	return Ref();
 }
 
-// TODO: write using indexSearchByRef() function
 // Return the reference before the given ref
 Ref Bible::prev(const Ref ref, LookupResult& status) { 
 	auto it = refs.find(ref);
@@ -265,6 +260,5 @@ Ref Bible::prev(const Ref ref, LookupResult& status) {
 			status = findErrorInRef(ref);
 		}
 	}
-	// TODO: what to return here?
 	return Ref();
 }
