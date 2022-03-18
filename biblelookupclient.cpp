@@ -138,7 +138,7 @@ int main() {
 	// Retrieve fifo reply
 	recFifo.openread();
 	string fifoReply = recFifo.recv();
-	log("received request from server: " + fifoReply);
+	log("received reply from server: " + fifoReply);
 
 	// Parse reply, checking status of reply first
 	int replyStatus = stoi(GetNextToken(fifoReply, " "));
@@ -163,7 +163,7 @@ int main() {
 			sendFifo.send(fifoRequest);
 
 			fifoReply = recFifo.recv();
-			log("received request from server: " + fifoReply);
+			log("received reply from server: " + fifoReply);
 
 			replyStatus = stoi(GetNextToken(fifoReply, " "));
 			result = static_cast<LookupResult>(replyStatus);
@@ -176,7 +176,7 @@ int main() {
 
 				// retrieve server reply
 				fifoReply = recFifo.recv();
-				log("received request from server: " + fifoReply);
+				log("received reply from server: " + fifoReply);
 
 				int replyStatus = stoi(GetNextToken(fifoReply, " "));
 				result = static_cast<LookupResult>(replyStatus);
