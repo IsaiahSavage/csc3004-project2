@@ -64,6 +64,7 @@ PutCGI:	biblelookupclient.cgi
 
 PutHTML:
 		cp bibleindex.html /var/www/html/class/csc3004/$(USER)
+		cp styles.css /var/www/html/class/csc3004/$(USER)
 
 		echo "Current contents of your HTML directory: "
 		ls -l /var/www/html/class/csc3004/$(USER)

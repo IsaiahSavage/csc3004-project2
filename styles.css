@@ -1,0 +1,38 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+.radio-container {
+    display: flex;
+    padding-top: 1rem;
+}
+
+    .radio-container input {
+        margin: 0 1rem;
+    }
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem 0 1rem;
+}
+
+    .form-container input,
+    .form-container select {
+        margin-bottom: 1rem;
+    }
+
+        .form-container input[type="submit"] {
+            padding: 0.5rem;
+            width: 25%;
+        }
+
+#form-reference {
+    width: 25%;
+}
