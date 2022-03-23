@@ -13,7 +13,7 @@ Reply Pipe Format: "STATUS BOOK:CHAPTER:VERSE TEXT"
 		- STATUS is an integer representation of LookupResult enum
 		- BOOK, CHAPTER, and VERSE are integers
 		- TEXT is a string representing the text of the requested verse (returned only when request 
-		was for lookup() method)
+		was for 'lookup' method)
 	REASONING
 		- Passing status first allows for easy checking of success/failure. If a failure occurs, the
 		rest of the input does not need to be read, thereby allowing for potentially faster 
